@@ -20,8 +20,24 @@ export class Funcionario{
         cpf: string,
         setor: string,
         cargo: string
-    )
-    return new Funcionario(nome,)
+    ){
+    return new Funcionario(nome,cpf,setor,cargo)
+    }
 
+    getnome(): string{
+        return this.nome;
+    }
 
+    getcpf(): string{
+    return this.cpf;
+    }
+
+    getsetor(): string{
+        return this.setor;
+    }
+
+    getcargo(): string{
+        return this.cargo;
+    }
+  
 }
