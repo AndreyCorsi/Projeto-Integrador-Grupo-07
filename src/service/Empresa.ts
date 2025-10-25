@@ -13,16 +13,16 @@ export class EmpresaService{
         cnpj: string,
         email: string,
         senha: string}): Empresa {
-
-        const EmpresaCreated = Empresa.create(
+    // Coloca a empresa criada na lista Empresa
+        const EmpresaCriado = Empresa.create(
         empresa.empresa,
         empresa.cnpj,
         empresa.endereco,
         empresa.email,
         empresa.senha
         );
-        this.Empresas.push(EmpresaCreated);
-        return EmpresaCreated
+        this.Empresas.push(EmpresaCriado);
+        return EmpresaCriado
     }
 
     getEmpresas(): Empresa[] {
