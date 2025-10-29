@@ -1,3 +1,5 @@
+import bcrypt from "bcryptjs";
+
 export class Empresa {
     constructor(
         private empresa: string,
@@ -16,9 +18,17 @@ export class Empresa {
     if(senha.length <= 6) throw new Error("Senha muito curta");
     if(email.length <= 100) throw new Error("Email muito grande");
     }
+
     
-    static create(empresa: string, endereco:string, cpnj: string, email:string, senha:string){
+    static create(empresa: string, endereco:string, cpnj: string, email:string, senha:string)
+    {
+    const id = crypto.randomUUID();
+    const hashedPassword = bcrypt.hashSync(senha);
         return new Empresa(empresa,endereco,cpnj,email,senha)
+    }
+
+     verifyPassword(senha: string): boolean {
+    return bcrypt.compareSync(senha, this.senha);
     }
 
     getempresa(): string{
@@ -37,8 +47,9 @@ export class Empresa {
         return this.email;
     }
 
-    getsenha(): string{
-        return this.senha;
-    }
+    setsenha(senha: string): void {
+    const hashedPassword = bcrypt.hashSync(senha);
+    this.senha = hashedPassword;
+  }
   
 }

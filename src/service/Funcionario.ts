@@ -53,7 +53,7 @@ createFuncionario(data: { nome: string, cpf: string, setor: string, cargo: strin
     return funcionarioCriado;
 }
 
-    // Consulta do funcionário utilizando CPF ou RG do funcionário
+    // Consulta do funcionário utilizando CPF do funcionário
 consultarFuncionario(identificador: { cpf?: string }): Funcionario | undefined {
     if (identificador.cpf) {
         // Consulta pelo CPF

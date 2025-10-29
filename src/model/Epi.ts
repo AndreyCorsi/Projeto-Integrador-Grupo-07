@@ -1,3 +1,5 @@
+import { Funcionario } from "./Funcionario";
+
 export class Epi{
     constructor(
         private epi: string,
@@ -7,6 +9,7 @@ export class Epi{
         private tipo: string,
         private fabricante: string,
         private data_entrada: Date,
+        private cpfdofuncionario: string
     ){
         if(!epi) throw new Error("Nome do EPI obrigatório");
         if(!CA) throw new Error("Número de CA obrigatório");
@@ -30,8 +33,9 @@ export class Epi{
         tipo: string,
         fabricante: string,
         data_entrada: Date,
+        cpfdofuncionario: string
     ){
-        return new Epi(epi,CA,modo_uso,validade,tipo,fabricante,data_entrada)
+        return new Epi(epi,CA,modo_uso,validade,tipo,fabricante,data_entrada,cpfdofuncionario)
     }
     
     getepi(): string{
@@ -60,6 +64,38 @@ export class Epi{
 
     getdata_entrada(): Date{
         return this.data_entrada;
+    }
+
+    getcpfdofuncionario(): string{
+        return this.cpfdofuncionario
+    }
+    //Alteração
+    setepi(epi:string): void{
+        this.epi;
+    }
+
+    setCA(CA:string): void{
+        this.CA;
+    }
+
+    setemodo_uso(modo_uso:string): void{
+        this.modo_uso;
+    }
+
+    setvalidade(validade:Date): void{
+        this.validade;
+    }
+
+    settipo(tipo:string): void {
+        this.tipo;
+    }
+
+    setfabricante(fabricante:string): void{
+        this.fabricante;
+    }
+
+    setdata_entrada(data_entrada:Date): void{
+        this.data_entrada;
     }
 
 }
