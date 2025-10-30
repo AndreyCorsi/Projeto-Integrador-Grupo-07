@@ -9,7 +9,9 @@ export class Empresa {
         private senha: string
     )  
     {
-    if(!empresa)throw new Error("Nome da empresa Obrigatório");
+    if(!empresa)throw new Error(
+        
+        "Nome da empresa Obrigatório");
     if(!endereco)throw new Error("Endereço Obrigatório");
     if(!cnpj)throw new Error("CNPJ da empresa Obrigatório");
     if(!email)throw new Error("Email Obrigatório");

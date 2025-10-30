@@ -2,7 +2,6 @@
 
 import { Funcionario } from "../model/Funcionario"; 
 
-
 type EPI = {
 id: string;
 nomeEPI: string;
@@ -23,7 +22,7 @@ const generateId = () => crypto.randomUUID();
 
 export class FuncionarioService {
 // Lista de Funcionários (Armazenamento em memória, como no PDF)
-lista: Funcionario[] = [];
+Funcionarios: Funcionario[] = [];
 
 // Lista de EPIs/CA 
 listaEPIs: EPI[] = []; 
@@ -33,7 +32,7 @@ historicoEPI: HistoricoEPI[] = [];
 
 
 constructor(public armazenamentoFuncionario: Funcionario[] = []) {
-    this.lista = armazenamentoFuncionario;
+    this.Funcionarios = armazenamentoFuncionario;
 }
 
     // 1. Cadastrado de Funcionários
@@ -48,18 +47,14 @@ createFuncionario(data: { nome: string, cpf: string, setor: string, cargo: strin
         data.setor
     );
     
-    this.lista.push(funcionarioCriado);
+    this.Funcionarios.push(funcionarioCriado);
     
     return funcionarioCriado;
 }
 
     // Consulta do funcionário utilizando CPF do funcionário
-consultarFuncionario(identificador: { cpf?: string }): Funcionario | undefined {
-    if (identificador.cpf) {
-        // Consulta pelo CPF
-        return this.lista.find((Funcionario) => Funcionario.getcpf() === identificador.cpf);
-    }
-    
+consultarFuncionario(cpf: string): Funcionario | undefined {
+        return this.Funcionarios.find((Funcionario) => Funcionario.getcpf() === cpf);
 }
 
     // Visualização dos EPI's perto de vencer
@@ -80,7 +75,7 @@ substituirEPI(
     motivo: string
 ): HistoricoEPI {
     
-    const funcionario = this.lista.find(Funcionario => Funcionario.getcpf() === funcionarioCpf);
+    const funcionario = this.Funcionarios.find(Funcionario => Funcionario.getcpf() === funcionarioCpf);
     if (!funcionario) {
         throw new Error(`Funcionário com CPF ${funcionarioCpf} não encontrado.`);
     }
@@ -110,7 +105,7 @@ substituirEPI(
 
 // lista os funcionarios
 getFuncionarios(): Funcionario[] {
-    return this.lista;
+    return this.Funcionarios;
 }
 
 // Pesquisa por CPF, ou seja, busca pelo cpf do funcionario

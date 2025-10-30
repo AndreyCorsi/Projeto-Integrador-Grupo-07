@@ -1,5 +1,3 @@
-import { Funcionario } from "./Funcionario";
-
 export class Epi{
     constructor(
         private epi: string,
@@ -10,8 +8,9 @@ export class Epi{
         private fabricante: string,
         private data_entrada: Date,
         private cpfdofuncionario: string
+        
     ){
-        if(!epi) throw new Error("Nome do EPI obrigatório");
+        if(!Epi) throw new Error("Nome do EPI obrigatório");
         if(!CA) throw new Error("Número de CA obrigatório");
         if(!validade) throw new Error("Validade do EPI Obrigatório");
         if(!tipo) throw new Error("Tipo do EPI Obrigatório");
@@ -35,7 +34,7 @@ export class Epi{
         data_entrada: Date,
         cpfdofuncionario: string
     ){
-        return new Epi(epi,CA,modo_uso,validade,tipo,fabricante,data_entrada,cpfdofuncionario)
+        return new Epi(epi, CA, modo_uso, validade, tipo, fabricante, data_entrada, cpfdofuncionario)
     }
     
     getepi(): string{

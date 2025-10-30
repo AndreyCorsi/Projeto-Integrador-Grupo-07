@@ -1,6 +1,8 @@
 // src/service/epi.ts
 
 import { Epi } from "../model/Epi"; // Importa a classe EPI que você forneceu
+import { Funcionario } from "../model/Funcionario";
+import { FuncionarioService } from "./Funcionario";
 
 type HistoricoEPI = any;
 
@@ -9,17 +11,17 @@ const generateId = () => crypto.randomUUID();
 
 export class EPIService {
     // Lista de EPIs 
-    lista: Epi[] = []; 
+    EPIs: Epi[] = []; 
     
     // Lista de Histórico de substituições e entregas (
     historico: HistoricoEPI[] = []; 
 
     // O construtor segue o padrão de injeção de dependência/inicialização do PDF
     constructor(public armazenamentoEPI: Epi[] = []) {
-        this.lista = armazenamentoEPI;
+        this.EPIs = armazenamentoEPI;
     }
 
-    // 1. Cadastro de EPI
+    // Cadastro de EPI
     createEPI(data: {
         epi: string,
         tipo: string,
@@ -32,31 +34,34 @@ export class EPIService {
     }): Epi {
         
         // Uso do static create da sua classe EPI para validação e criação
-        const epiCreated = Epi.create(
+        const epiCriado = Epi.create(
             data.epi,
             data.tipo,
             data.CA,
             data.validade,
             data.modouso,
             data.fabricante,
-            data.data_entrada,
-            
+            data.data_entrada,   
             data.cpfdofuncionario
         );
         
-        this.lista.push(epiCreated);
+        this.EPIs.push(epiCriado);
         
-        return epiCreated;
+        return epiCriado;
     }
     
     // Visualização de EPI (Todos os Epi's)
     getEPIs(): Epi[] {
-        return this.lista;
+        return this.EPIs;
     }
 
     // Consulta de EPI através do CA
     getEPIByCA(caNumero: string): Epi | undefined {
-        return this.lista.find((epi) => epi.getCA() === caNumero);
+        return this.EPIs.find((epi) => epi.getCA() === caNumero);
+    }
+
+    getEPIByCPF(cpf: string): Epi | undefined {
+        return this.EPIs.find((epi) => epi.getcpfdofuncionario() === cpf);
     }
 
     // Visualização de CA próximos de vencer
@@ -64,7 +69,7 @@ export class EPIService {
         const dataLimite = new Date();
         dataLimite.setDate(dataLimite.getDate() + diasLimite); 
         
-        return this.lista.filter((epi) => {
+        return this.EPIs.filter((epi) => {
             // Filtra os EPIs cuja validade está entre hoje e a data limite
             return epi.getvalidade() <= dataLimite && epi.getvalidade() >= new Date(); 
         });
@@ -107,5 +112,16 @@ export class EPIService {
     // Função auxiliar para consultar o histórico 
     getHistoricoEntregas(identificadorFuncionario: string): any[] {
         return this.historico.filter(h => h.identificadorFuncionario === identificadorFuncionario);
+    }
+
+removeEPI(caNumero: string): boolean {
+        // Guarda a lista antes de tirar
+        const ListaAntes = this.EPIs.length;
+        
+        // Mantém o EPI, tirando somente o deletado
+        this.EPIs = this.EPIs.filter((epi) => epi.getCA() !== caNumero);
+
+        // Retorna se o tamanho da lista diminuiu (remoção bem-sucedida).
+        return this.EPIs.length < ListaAntes;
     }
 }
