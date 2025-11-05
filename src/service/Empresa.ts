@@ -11,7 +11,7 @@ export class EmpresaService{
         cnpj: string,
         email: string,
         senha: string}): Empresa {
-    // Coloca a empresa criada na lista Empresa
+
         const EmpresaCriado = Empresa.create(
         empresa.empresa,
         empresa.cnpj,

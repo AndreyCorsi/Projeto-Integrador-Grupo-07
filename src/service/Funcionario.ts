@@ -21,13 +21,13 @@ motivoSubstituicao: string;
 const generateId = () => crypto.randomUUID();
 
 export class FuncionarioService {
-// Lista de Funcionários (Armazenamento em memória, como no PDF)
+
 Funcionarios: Funcionario[] = [];
 
-// Lista de EPIs/CA 
+
 listaEPIs: EPI[] = []; 
 
-// Lista de Histórico de substituições 
+
 historicoEPI: HistoricoEPI[] = []; 
 
 
@@ -35,11 +35,11 @@ constructor(public armazenamentoFuncionario: Funcionario[] = []) {
     this.Funcionarios = armazenamentoFuncionario;
 }
 
-    // 1. Cadastrado de Funcionários
+
 
 createFuncionario(data: { nome: string, cpf: string, setor: string, cargo: string }): Funcionario {
 
-    // Pega o Funcionário criado e coloca dentro de uma lista
+
     const funcionarioCriado = Funcionario.create(
         data.nome, 
         data.cpf, 
@@ -76,7 +76,7 @@ substituirEPI(
         throw new Error(`Funcionário com CPF ${funcionarioCpf} não encontrado.`);
     }
     
-    // Cria um novo EPI
+
     const novoEpi: EPI = {
         ...novoEpiData,
         id: generateId()
@@ -99,12 +99,11 @@ substituirEPI(
     return historico;
 }
 
-// lista os funcionarios
+
 getFuncionarios(): Funcionario[] {
     return this.Funcionarios;
 }
 
-// Pesquisa por CPF, ou seja, busca pelo cpf do funcionario
 getHistoricoEPI(funcionarioCpf: string): HistoricoEPI[] {
     return this.historicoEPI.filter(h => h.funcionarioCpf === funcionarioCpf);
 }

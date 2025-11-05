@@ -1,14 +1,11 @@
-// src/controller/FuncionarioController.ts
 
 import { app } from "../server";
-// Tipagens e Serviço importados corretamente. 
+
 import { FuncionarioService } from "../service/Funcionario";
 import { Funcionario } from "../model/Funcionario";
 
 
-/**
- * Função utilitária para formatar a resposta do Funcionário, expondo apenas os dados essenciais.
- */
+
 const formatarFuncionario = (funcionario: Funcionario) => ({
     nome: funcionario.getnome(),
     cpf: funcionario.getcpf(),

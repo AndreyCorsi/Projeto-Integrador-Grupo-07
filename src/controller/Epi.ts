@@ -42,7 +42,7 @@ export function EPIController() {
                 dados: formatarEPI(novoEPI),
             });
         } catch (e: any) {
-            // Captura erros de validação
+
             return res.status(400).json({ erro: e.message });
         }
     });
@@ -105,11 +105,10 @@ export function EPIController() {
             if (!identificadorFuncionario || !motivo || !novoEpi) {
                 return res.status(400).json({ erro: "Dados de funcionário, motivo e novoEPI são obrigatórios." });
             }
-            
-            // O serviço tem o método substituirEPI
+
             const registroHistorico = service.substituirEPI(
                 identificadorFuncionario, 
-                novoEpi as any, // Garantindo a tipagem
+                novoEpi as any, 
                 motivo
             );
 
@@ -121,7 +120,7 @@ export function EPIController() {
                     epiCA: registroHistorico.epi.getCA(),
                     dataEntrega: registroHistorico.dataEntrega,
                     motivo: registroHistorico.motivoSubstituicao,
-                    dataVencimentoPrevisto: registroHistorico.dataVencimentoPrevisto // Adicionado
+                    dataVencimentoPrevisto: registroHistorico.dataVencimentoPrevisto
                 },
             });
         } catch (e: any) {
