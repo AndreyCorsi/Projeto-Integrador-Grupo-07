@@ -52,23 +52,19 @@ createFuncionario(data: { nome: string, cpf: string, setor: string, cargo: strin
     return funcionarioCriado;
 }
 
-    // Consulta do funcionário utilizando CPF do funcionário
-consultarFuncionario(cpf: string): Funcionario | undefined {
-        return this.Funcionarios.find((Funcionario) => Funcionario.getcpf() === cpf);
+consultarFuncionario(cpf: string): Funcionario[] | undefined {
+        return this.Funcionarios.filter((Funcionario) => Funcionario.getcpf() === cpf);
 }
 
-    // Visualização dos EPI's perto de vencer
 visualizarCAsProximosDeVencer(diasLimite: number = 90): EPI[] {
     const dataLimite = new Date();
     dataLimite.setDate(dataLimite.getDate() + diasLimite); 
     
-    // Filtra todos os EPI's que estão perto do vencimento
     return this.listaEPIs.filter((epi) => {
         return epi.caValidade <= dataLimite && epi.caValidade >= new Date(); 
     });
 }
 
-// Substituição do EPI perto do vencimento com histórico
 substituirEPI(
     funcionarioCpf: string, 
     novoEpiData: { nomeEPI: string, caNumero: string, caValidade: Date }, 
@@ -87,7 +83,7 @@ substituirEPI(
     };
     this.listaEPIs.push(novoEpi);
 
-    // Registra o histórico da substituição do EPI, a data do ocorrido
+    
     const dataAtual = new Date();
     const historico: HistoricoEPI = {
         id: generateId(),

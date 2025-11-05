@@ -13,7 +13,7 @@ export class EPIService {
     // Lista de EPIs 
     EPIs: Epi[] = []; 
     
-    // Lista de Histórico de substituições e entregas (
+    // Lista de Histórico de substituições  
     historico: HistoricoEPI[] = []; 
 
     // O construtor segue o padrão de injeção de dependência/inicialização do PDF
@@ -24,25 +24,23 @@ export class EPIService {
     // Cadastro de EPI
     createEPI(data: {
         epi: string,
-        tipo: string,
         CA: string,
+        modo_uso: string,
         validade: Date,
-        modouso: string,
+        tipo: string,
         fabricante: string,
         data_entrada: Date
-        cpfdofuncionario: string
     }): Epi {
         
-        // Uso do static create da sua classe EPI para validação e criação
+        // Uso do static create da classe EPI para validação e criação
         const epiCriado = Epi.create(
             data.epi,
-            data.tipo,
             data.CA,
+            data.modo_uso,
             data.validade,
-            data.modouso,
+            data.tipo,
             data.fabricante,
             data.data_entrada,   
-            data.cpfdofuncionario
         );
         
         this.EPIs.push(epiCriado);
@@ -60,9 +58,6 @@ export class EPIService {
         return this.EPIs.find((epi) => epi.getCA() === caNumero);
     }
 
-    getEPIByCPF(cpf: string): Epi | undefined {
-        return this.EPIs.find((epi) => epi.getcpfdofuncionario() === cpf);
-    }
 
     // Visualização de CA próximos de vencer
     visualizarCAsProximosDeVencer(diasLimite: number = 90): Epi[] {
@@ -83,10 +78,9 @@ export class EPIService {
             tipo: string,
             CA: string,
             validade: Date,
-            modouso: string,
+            modo_uso: string,
             fabricante: string,
             data_entrada: Date
-            cpfdofuncionario: string
         }, 
         motivoSubstituicao: string
     ): any { // Retorna 'any' para não criar nova tipagem

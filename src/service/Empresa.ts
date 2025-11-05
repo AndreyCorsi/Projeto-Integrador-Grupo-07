@@ -3,9 +3,7 @@ import { Empresa } from "../model/Empresa";
 export class EmpresaService{
     Empresas: Empresa[] = [];
 
-    constructor(public armazenamento: Empresa[]){
-        this.Empresas = armazenamento;
-    }
+    constructor(){}
 
     createEmpresa(empresa:{
         empresa: string,

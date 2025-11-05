@@ -18,13 +18,12 @@ export class Empresa {
     if(!senha)throw new Error("Senha Obrigatório");
 
     if(senha.length <= 6) throw new Error("Senha muito curta");
-    if(email.length <= 100) throw new Error("Email muito grande");
+    if(email.length >= 100) throw new Error("Email muito grande");
     }
 
     
     static create(empresa: string, endereco:string, cpnj: string, email:string, senha:string)
     {
-    const id = crypto.randomUUID();
     const hashedPassword = bcrypt.hashSync(senha);
         return new Empresa(empresa,endereco,cpnj,email,senha)
     }

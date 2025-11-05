@@ -7,7 +7,6 @@ export class Epi{
         private tipo: string,
         private fabricante: string,
         private data_entrada: Date,
-        private cpfdofuncionario: string
         
     ){
         if(!Epi) throw new Error("Nome do EPI obrigatório");
@@ -32,9 +31,8 @@ export class Epi{
         tipo: string,
         fabricante: string,
         data_entrada: Date,
-        cpfdofuncionario: string
     ){
-        return new Epi(epi, CA, modo_uso, validade, tipo, fabricante, data_entrada, cpfdofuncionario)
+        return new Epi(epi, CA, modo_uso, validade, tipo, fabricante, data_entrada)
     }
     
     getepi(): string{
@@ -65,36 +63,13 @@ export class Epi{
         return this.data_entrada;
     }
 
-    getcpfdofuncionario(): string{
-        return this.cpfdofuncionario
-    }
+
+
+
     //Alteração
-    setepi(epi:string): void{
-        this.epi;
-    }
-
-    setCA(CA:string): void{
-        this.CA;
-    }
-
-    setemodo_uso(modo_uso:string): void{
-        this.modo_uso;
-    }
 
     setvalidade(validade:Date): void{
         this.validade;
-    }
-
-    settipo(tipo:string): void {
-        this.tipo;
-    }
-
-    setfabricante(fabricante:string): void{
-        this.fabricante;
-    }
-
-    setdata_entrada(data_entrada:Date): void{
-        this.data_entrada;
     }
 
 }

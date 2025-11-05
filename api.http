@@ -1,0 +1,84 @@
+### USUÁRIOS
+
+### Listar todos os Funcionarios
+GET http://localhost:3000/funcionarios
+
+###
+
+### Criar Funcionario
+POST http://localhost:3000/funcionarios
+content-type: application/json
+
+{
+  "nome": "Andrey Corsi",
+  "cpf": "11111111111",
+  "setor": "andrey@gmail.com",
+  "cargo": "senha123"
+  }
+
+### Buscar Funcionario por cpf
+GET http://localhost:3000/funcionarios/buscar?cpf=11111111111
+
+### Listar todos os EPI's
+GET http://localhost:3000/epis
+
+### Criar EPI
+POST http://localhost:3000/epis
+content-type: application/json
+
+{
+    "epi": "Capcacete",
+    "CA": "145",
+    "modo_uso": "Utilize na cabeça",
+    "validade": "14/10/2027",
+    "tipo": "Cabeça",
+    "fabricante": "Made China",
+    "data_entrada": "04/11/2025"
+    }
+
+### Busca por CA
+GET http://localhost:3000/epis/buscar/ca?ca=145
+
+### Deletar EPI
+DELETE http://localhost:3000/epis/145
+
+
+### Busca de EPI's proximos ao vencimento
+GET http://localhost:3000/epis/vencimento?dias=90
+
+### Criar Empresa
+POST http://localhost:3000/empresas
+content-type: application/json
+
+{
+    "empresa": "ASPPE",
+    "endereco": "Santos",
+    "cnpj": "15151515",
+    "email": "Asppe@gmail.com",
+    "senha": "Aasfafasfasf"
+    }
+
+### Empresa
+GET http://localhost:3000/empresas
+
+###
+POST http://localhost:3000/empresas/autenticacao
+content-type: application/json
+
+{
+    "email": "Asppe@gmail.com",
+    "senha": "Aasfafasfasf"
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+

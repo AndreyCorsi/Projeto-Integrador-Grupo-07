@@ -1,11 +1,9 @@
-Empresa
-
 import { app } from "../server";
 import { EmpresaService } from "../service/Empresa";
 import { Empresa } from "../model/Empresa";
 
 export function EmpresaController() {
-  const service = new EmpresaService([]);
+  const service = new EmpresaService();
 
   const formatarEmpresa = (empresa: Empresa) => ({
     empresa: empresa.getempresa(),
@@ -39,23 +37,6 @@ export function EmpresaController() {
     res.json(empresasFormatadas);
   });
 
-  app.get("/empresas/email/:email", (req, res) => {
-    const { email } = req.params; 
-
-    if (!email) {
-      return res.status(400).json({
-        mensagem: "Parâmetro de busca inválido. Use: email.",
-      });
-    }
-
-    const empresa = service.getEmpresaByemail(email as string);
-
-    if (!empresa) {
-      return res.status(404).json({ mensagem: "Empresa não encontrada com o email fornecido." });
-    }
-
-    return res.status(200).json(formatarEmpresa(empresa));
-  });
 
   app.post("/empresas/autenticacao", (req, res) => {
     try {

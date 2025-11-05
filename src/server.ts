@@ -22,6 +22,6 @@ EmpresaController();
 EPIController();
 FuncionarioController();
 
-app.listen(3007, () => {
+app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
