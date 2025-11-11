@@ -1,4 +1,4 @@
-const API_URL = "http://grupo07projeto20252.escolatecnicaadelia.info/api";
+const API_URL = "https://grupo07projeto20252.escolatecnicaadelia.info/api";
 
 // Tipos para as requisições
 export interface FuncionarioCreateDTO {
