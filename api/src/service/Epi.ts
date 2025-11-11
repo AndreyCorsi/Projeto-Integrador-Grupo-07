@@ -1,13 +1,9 @@
-// src/service/epi.ts
 
-import { Epi } from "../model/Epi"; // Importa a classe EPI que você forneceu
-import { Funcionario } from "../model/Funcionario";
-import { FuncionarioService } from "./Funcionario";
+import { Epi } from "../model/Epi"; 
 
 type HistoricoEPI = any;
 
 
-const generateId = () => crypto.randomUUID();
 
 export class EPIService {
  
@@ -96,7 +92,6 @@ export class EPIService {
 
 
         const historicoRegistro = {
-            id: generateId(),
             identificadorFuncionario: identificadorFuncionario,
             epi: epi, // O objeto EPI existente
             dataEntrega: new Date(),

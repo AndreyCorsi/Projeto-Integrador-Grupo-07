@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "http://grupo07projeto.escolatecnicaadelia.info/api";
 
 // Tipos para as requisições
 export interface FuncionarioCreateDTO {

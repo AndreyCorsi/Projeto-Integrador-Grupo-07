@@ -12,7 +12,7 @@ export function EmpresaController() {
     email: empresa.getemail(),
   });
 
-  app.post("/empresas", (req, res) => {
+  app.post("/api/empresas", (req, res) => {
     try {
       const dadosEmpresa = req.body;
       
@@ -31,14 +31,14 @@ export function EmpresaController() {
     }
   });
 
-  app.get("/empresas", (req, res) => {
+  app.get("/api/empresas", (req, res) => {
     const empresas = service.getEmpresas();
     const empresasFormatadas = empresas.map(formatarEmpresa);
     res.json(empresasFormatadas);
   });
 
 
-  app.post("/empresas/autenticacao", (req, res) => {
+  app.post("/api/empresas/autenticacao", (req, res) => {
     try {
       const { email, senha } = req.body;
 

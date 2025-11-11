@@ -23,14 +23,14 @@ export function EPIController() {
     const service = new EPIService();
 
    
-    app.get("/epis", (req, res) => {
+    app.get("/api/epis", (req, res) => {
         const epis = service.getEPIs();
         const episFormatados = epis.map(formatarEPI); 
         res.json(episFormatados);
     });
 
 
-    app.post("/epis", (req, res) => {
+    app.post("/api/epis", (req, res) => {
         try {
 
             const dadosEPI = req.body;
@@ -48,7 +48,7 @@ export function EPIController() {
     });
 
     
-    app.get("/epis/ca/:caNumero", (req, res) => {
+    app.get("/api/epis/ca/:caNumero", (req, res) => {
         const { caNumero } = req.params;
 
 
@@ -65,7 +65,7 @@ export function EPIController() {
     });
     
 
-    app.get("/epis/vencimento", (req, res) => {
+    app.get("/api/epis/vencimento", (req, res) => {
         const { diasLimite } = req.query;
 
         let limite = 90; 
@@ -97,7 +97,7 @@ export function EPIController() {
 
 
 
-    app.post("/epis/substituicao", (req, res) => {
+    app.post("/api/epis/substituicao", (req, res) => {
         try {
             
             const { identificadorFuncionario, motivo, novoEpi } = req.body; 
@@ -128,7 +128,7 @@ export function EPIController() {
         }
     });
 
-    app.put("/epis/:ca", (req, res) => {
+    app.put("/api/epis/:ca", (req, res) => {
         const { ca } = req.params;
         const dadosAtualizacao = req.body;
 
@@ -157,7 +157,7 @@ export function EPIController() {
         }
     });
 
-    app.delete("/epis/:ca", (req, res) => {
+    app.delete("/api/epis/:ca", (req, res) => {
         const { ca } = req.params;
         const removido = service.removeEPI(ca);
 
@@ -168,7 +168,7 @@ export function EPIController() {
         }
     });
 
-    app.get("/epis/buscar/ca", (req, res) => {
+    app.get("/api/epis/buscar/ca", (req, res) => {
     const { ca } = req.query; 
 
     if (!ca) {
