@@ -112,15 +112,20 @@ const Index = () => {
     }
   };
 
-  const handleUpdateCA = async (id: string, ca: string, validade: string) => {
-    setEpis(
-      epis.map((epi) =>
-        epi.id === id ? { ...epi, ca, validade } : epi
-      )
-    );
-
-    // Recarregar EPIs da API para garantir sincronização
+  const handleUpdateCA = async (epiAtualizado: EPI) => {
     try {
+      // Chamar a API para atualizar o EPI
+      await EPIAPI.atualizar(epiAtualizado.ca, {
+        epi: epiAtualizado.nome,
+        CA: epiAtualizado.ca,
+        modo_uso: epiAtualizado.uso,
+        validade: new Date(epiAtualizado.validade).toISOString(),
+        tipo: epiAtualizado.tipo,
+        fabricante: epiAtualizado.fabricante,
+        data_entrada: new Date(epiAtualizado.entrega).toISOString(),
+      });
+
+      // Recarregar EPIs da API para garantir sincronização
       const episData = await EPIAPI.listar();
       const episFormatados = episData.map((epi: any) => ({
         id: epi.CA,
@@ -133,8 +138,10 @@ const Index = () => {
         entrega: new Date(epi.data_entrada).toISOString().split("T")[0],
       }));
       setEpis(episFormatados);
+      toast.success("EPI atualizado com sucesso!");
     } catch (error) {
-      console.error("Erro ao recarregar EPIs:", error);
+      toast.error(error instanceof Error ? error.message : "Erro ao atualizar EPI");
+      console.error("Erro ao atualizar EPI:", error);
     }
   };
 
@@ -275,7 +282,7 @@ const Index = () => {
               atribuicoes={atribuicoes}
               onAssignEPI={handleAssignEPI}
               onUnassignEPI={handleUnassignEPI}
-              onUpdateCA={openUpdateModal}
+              onUpdateCA={handleUpdateCA}
               onDeleteEPI={handleDeleteEPI}
               onUpdateFuncionario={handleUpdateFuncionario}
               onUpdateAtribuicaoValidade={handleUpdateAtribuicaoValidade}

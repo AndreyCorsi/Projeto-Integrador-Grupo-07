@@ -1,28 +1,32 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { 
-  ShieldAlert, 
-  Mail, 
-  Lock, 
-  Building, 
-  Factory, 
-  Calendar, 
-  CreditCard, 
-  Phone, 
-  MapPin, 
+import {
+  ShieldAlert,
+  Mail,
+  Lock,
+  Building,
+  Factory,
+  Calendar,
+  CreditCard,
+  Phone,
+  MapPin,
   UserCircle,
   CheckCircle2,
   LogIn,
-  UserPlus
+  UserPlus,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { EmpresaAPI } from "@/lib/api";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [isLoading, setIsLoading] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
     razaoSocial: "",
@@ -34,39 +38,105 @@ const Auth = () => {
     email: "",
     responsavel: "",
     senha: "",
-    confirmarSenha: ""
+    confirmarSenha: "",
   });
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Funcionalidade de login será implementada em breve!");
+    setIsLoading(true);
+
+    try {
+      const response = await EmpresaAPI.login({
+        email: loginForm.email,
+        senha: loginForm.password,
+      });
+
+      toast.success("Login realizado com sucesso!");
+
+      // Armazenar dados da empresa no localStorage
+      localStorage.setItem("empresa", JSON.stringify(response.dados));
+
+      // Redirecionar para a página principal
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao fazer login"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (registerForm.senha !== registerForm.confirmarSenha) {
       toast.error("As senhas não coincidem!");
       return;
     }
-    
-    toast.success("Registro será implementado em breve!");
+
+    setIsLoading(true);
+
+    try {
+      await EmpresaAPI.registrar({
+        empresa: registerForm.razaoSocial,
+        ramoAtividade: registerForm.ramoAtividade,
+        dataFundacao: registerForm.dataFundacao,
+        cnpj: registerForm.cnpj,
+        telefone: registerForm.telefone,
+        endereco: registerForm.endereco,
+        email: registerForm.email,
+        responsavel: registerForm.responsavel,
+        senha: registerForm.senha,
+      });
+
+      toast.success(
+        "Empresa registrada com sucesso! Faça login para continuar."
+      );
+
+      // Limpar formulário e mudar para aba de login
+      setRegisterForm({
+        razaoSocial: "",
+        ramoAtividade: "",
+        dataFundacao: "",
+        cnpj: "",
+        telefone: "",
+        endereco: "",
+        email: "",
+        responsavel: "",
+        senha: "",
+        confirmarSenha: "",
+      });
+      setActiveTab("login");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao registrar empresa"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const formatCNPJ = (value: string) => {
     const numbers = value.replace(/\D/g, "").slice(0, 14);
     if (numbers.length <= 2) return numbers;
     if (numbers.length <= 5) return numbers.replace(/^(\d{2})(\d*)/, "$1.$2");
-    if (numbers.length <= 8) return numbers.replace(/^(\d{2})(\d{3})(\d*)/, "$1.$2.$3");
-    if (numbers.length <= 12) return numbers.replace(/^(\d{2})(\d{3})(\d{3})(\d*)/, "$1.$2.$3/$4");
-    return numbers.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d*)/, "$1.$2.$3/$4-$5");
+    if (numbers.length <= 8)
+      return numbers.replace(/^(\d{2})(\d{3})(\d*)/, "$1.$2.$3");
+    if (numbers.length <= 12)
+      return numbers.replace(/^(\d{2})(\d{3})(\d{3})(\d*)/, "$1.$2.$3/$4");
+    return numbers.replace(
+      /^(\d{2})(\d{3})(\d{3})(\d{4})(\d*)/,
+      "$1.$2.$3/$4-$5"
+    );
   };
 
   const formatPhone = (value: string) => {
     const numbers = value.replace(/\D/g, "").slice(0, 11);
     if (numbers.length <= 2) return numbers;
     if (numbers.length <= 6) return numbers.replace(/^(\d{2})(\d*)/, "($1) $2");
-    if (numbers.length <= 10) return numbers.replace(/^(\d{2})(\d{4})(\d*)/, "($1) $2-$3");
+    if (numbers.length <= 10)
+      return numbers.replace(/^(\d{2})(\d{4})(\d*)/, "($1) $2-$3");
     return numbers.replace(/^(\d{2})(\d{5})(\d*)/, "($1) $2-$3");
   };
 
@@ -82,16 +152,17 @@ const Auth = () => {
                   <ShieldAlert className="w-full h-full" />
                 </div>
               </div>
-              
+
               <div className="relative z-10 text-center space-y-6">
                 <ShieldAlert className="w-20 h-20 mx-auto" />
                 <h1 className="text-4xl font-bold drop-shadow-lg">
                   Gestão de EPI
                 </h1>
                 <p className="text-lg opacity-90 max-w-md">
-                  Gerencie a segurança da sua empresa com eficiência e conformidade com as normas regulamentadoras.
+                  Gerencie a segurança da sua empresa com eficiência e
+                  conformidade com as normas regulamentadoras.
                 </p>
-                
+
                 <div className="space-y-3 pt-6">
                   <div className="flex items-center gap-3 justify-center">
                     <CheckCircle2 className="w-5 h-5" />
@@ -164,7 +235,12 @@ const Auth = () => {
                           placeholder="seu@email.com"
                           className="pl-10 bg-muted/50"
                           value={loginForm.email}
-                          onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+                          onChange={(e) =>
+                            setLoginForm({
+                              ...loginForm,
+                              email: e.target.value,
+                            })
+                          }
                           required
                         />
                       </div>
@@ -180,19 +256,41 @@ const Auth = () => {
                           placeholder="••••••••"
                           className="pl-10 bg-muted/50"
                           value={loginForm.password}
-                          onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                          onChange={(e) =>
+                            setLoginForm({
+                              ...loginForm,
+                              password: e.target.value,
+                            })
+                          }
                           required
                         />
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full" size="lg">
-                      <LogIn className="w-4 h-4 mr-2" />
-                      Entrar
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      size="lg"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Entrando...
+                        </>
+                      ) : (
+                        <>
+                          <LogIn className="w-4 h-4 mr-2" />
+                          Entrar
+                        </>
+                      )}
                     </Button>
 
                     <div className="text-center">
-                      <Link to="/" className="text-sm text-primary hover:underline">
+                      <Link
+                        to="/"
+                        className="text-sm text-primary hover:underline"
+                      >
                         Voltar para início
                       </Link>
                     </div>
@@ -222,7 +320,12 @@ const Auth = () => {
                           placeholder="Empresa XYZ Ltda"
                           className="pl-10 bg-muted/50"
                           value={registerForm.razaoSocial}
-                          onChange={(e) => setRegisterForm({ ...registerForm, razaoSocial: e.target.value })}
+                          onChange={(e) =>
+                            setRegisterForm({
+                              ...registerForm,
+                              razaoSocial: e.target.value,
+                            })
+                          }
                           required
                         />
                       </div>
@@ -230,7 +333,9 @@ const Auth = () => {
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="ramo-atividade">Ramo de Atividade</Label>
+                        <Label htmlFor="ramo-atividade">
+                          Ramo de Atividade
+                        </Label>
                         <div className="relative">
                           <Factory className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                           <Input
@@ -238,7 +343,12 @@ const Auth = () => {
                             placeholder="Construção Civil"
                             className="pl-10 bg-muted/50"
                             value={registerForm.ramoAtividade}
-                            onChange={(e) => setRegisterForm({ ...registerForm, ramoAtividade: e.target.value })}
+                            onChange={(e) =>
+                              setRegisterForm({
+                                ...registerForm,
+                                ramoAtividade: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -253,7 +363,12 @@ const Auth = () => {
                             type="date"
                             className="pl-10 bg-muted/50"
                             value={registerForm.dataFundacao}
-                            onChange={(e) => setRegisterForm({ ...registerForm, dataFundacao: e.target.value })}
+                            onChange={(e) =>
+                              setRegisterForm({
+                                ...registerForm,
+                                dataFundacao: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -270,7 +385,12 @@ const Auth = () => {
                             placeholder="00.000.000/0001-00"
                             className="pl-10 bg-muted/50"
                             value={registerForm.cnpj}
-                            onChange={(e) => setRegisterForm({ ...registerForm, cnpj: formatCNPJ(e.target.value) })}
+                            onChange={(e) =>
+                              setRegisterForm({
+                                ...registerForm,
+                                cnpj: formatCNPJ(e.target.value),
+                              })
+                            }
                             required
                           />
                         </div>
@@ -285,7 +405,12 @@ const Auth = () => {
                             placeholder="(00) 00000-0000"
                             className="pl-10 bg-muted/50"
                             value={registerForm.telefone}
-                            onChange={(e) => setRegisterForm({ ...registerForm, telefone: formatPhone(e.target.value) })}
+                            onChange={(e) =>
+                              setRegisterForm({
+                                ...registerForm,
+                                telefone: formatPhone(e.target.value),
+                              })
+                            }
                             required
                           />
                         </div>
@@ -301,7 +426,12 @@ const Auth = () => {
                           placeholder="Rua Exemplo, 123 - Bairro - Cidade/UF"
                           className="pl-10 bg-muted/50"
                           value={registerForm.endereco}
-                          onChange={(e) => setRegisterForm({ ...registerForm, endereco: e.target.value })}
+                          onChange={(e) =>
+                            setRegisterForm({
+                              ...registerForm,
+                              endereco: e.target.value,
+                            })
+                          }
                           required
                         />
                       </div>
@@ -318,7 +448,12 @@ const Auth = () => {
                             placeholder="contato@empresa.com"
                             className="pl-10 bg-muted/50"
                             value={registerForm.email}
-                            onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
+                            onChange={(e) =>
+                              setRegisterForm({
+                                ...registerForm,
+                                email: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -333,7 +468,12 @@ const Auth = () => {
                             placeholder="Nome do Responsável"
                             className="pl-10 bg-muted/50"
                             value={registerForm.responsavel}
-                            onChange={(e) => setRegisterForm({ ...registerForm, responsavel: e.target.value })}
+                            onChange={(e) =>
+                              setRegisterForm({
+                                ...registerForm,
+                                responsavel: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -351,7 +491,12 @@ const Auth = () => {
                             placeholder="••••••••"
                             className="pl-10 bg-muted/50"
                             value={registerForm.senha}
-                            onChange={(e) => setRegisterForm({ ...registerForm, senha: e.target.value })}
+                            onChange={(e) =>
+                              setRegisterForm({
+                                ...registerForm,
+                                senha: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -367,20 +512,42 @@ const Auth = () => {
                             placeholder="••••••••"
                             className="pl-10 bg-muted/50"
                             value={registerForm.confirmarSenha}
-                            onChange={(e) => setRegisterForm({ ...registerForm, confirmarSenha: e.target.value })}
+                            onChange={(e) =>
+                              setRegisterForm({
+                                ...registerForm,
+                                confirmarSenha: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full" size="lg">
-                      <UserPlus className="w-4 h-4 mr-2" />
-                      Registrar Empresa
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      size="lg"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Registrando...
+                        </>
+                      ) : (
+                        <>
+                          <UserPlus className="w-4 h-4 mr-2" />
+                          Registrar Empresa
+                        </>
+                      )}
                     </Button>
 
                     <div className="text-center">
-                      <Link to="/" className="text-sm text-primary hover:underline">
+                      <Link
+                        to="/"
+                        className="text-sm text-primary hover:underline"
+                      >
                         Voltar para início
                       </Link>
                     </div>

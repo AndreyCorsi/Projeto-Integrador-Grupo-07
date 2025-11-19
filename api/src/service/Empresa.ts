@@ -14,8 +14,8 @@ export class EmpresaService{
 
         const EmpresaCriado = Empresa.create(
         empresa.empresa,
-        empresa.cnpj,
         empresa.endereco,
+        empresa.cnpj,
         empresa.email,
         empresa.senha
         );

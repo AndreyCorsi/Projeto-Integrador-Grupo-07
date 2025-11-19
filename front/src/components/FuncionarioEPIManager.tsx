@@ -26,7 +26,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Edit2, Trash2, Plus, AlertTriangle, Search, User, FileText } from "lucide-react";
+import { Edit2, Trash2, Plus, AlertTriangle, Search, User, FileText, Eye } from "lucide-react";
 import { EPI, Funcionario, EPIAtribuicao } from "@/types";
 import { toast } from "sonner";
 import { differenceInDays, parseISO } from "date-fns";
@@ -69,6 +69,19 @@ export const FuncionarioEPIManager = ({
   const [selectedEPIs, setSelectedEPIs] = useState<Record<string, string>>({});
   const [editingAtribuicao, setEditingAtribuicao] = useState<{ atribuicaoId: string; validade: string } | null>(null);
   const [isValidadeDialogOpen, setIsValidadeDialogOpen] = useState(false);
+  const [viewingEPI, setViewingEPI] = useState<EPI | null>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [editingEPI, setEditingEPI] = useState<EPI | null>(null);
+  const [isEditEPIDialogOpen, setIsEditEPIDialogOpen] = useState(false);
+  const [editEPIForm, setEditEPIForm] = useState({
+    nome: "",
+    ca: "",
+    tipo: "",
+    fabricante: "",
+    validade: "",
+    entrega: "",
+    uso: ""
+  });
   
   const getExpirationStatus = (validade: string) => {
     const days = differenceInDays(parseISO(validade), new Date());
@@ -129,6 +142,33 @@ export const FuncionarioEPIManager = ({
       setIsEditDialogOpen(false);
       setEditingFuncionario(null);
       toast.success("Funcionário atualizado com sucesso!");
+    }
+  };
+
+  const handleEditEPIClick = (epi: EPI & { atribuicaoId: string }) => {
+    setEditingEPI(epi);
+    setEditEPIForm({
+      nome: epi.nome,
+      ca: epi.ca,
+      tipo: epi.tipo,
+      fabricante: epi.fabricante,
+      validade: epi.validade,
+      entrega: epi.entrega,
+      uso: epi.uso
+    });
+    setIsEditEPIDialogOpen(true);
+  };
+
+  const handleEditEPISubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingEPI) {
+      onUpdateCA({
+        ...editingEPI,
+        ...editEPIForm
+      });
+      setIsEditEPIDialogOpen(false);
+      setEditingEPI(null);
+      toast.success("EPI atualizado com sucesso!");
     }
   };
 
@@ -387,39 +427,146 @@ export const FuncionarioEPIManager = ({
                               <TableCell>{epi.tipo}</TableCell>
                               <TableCell className="text-right">
                                 <div className="flex justify-end gap-2">
-                                  <Dialog open={isValidadeDialogOpen && editingAtribuicao?.atribuicaoId === epi.atribuicaoId} onOpenChange={setIsValidadeDialogOpen}>
+                                  <Dialog open={isViewDialogOpen && viewingEPI?.id === epi.id} onOpenChange={setIsViewDialogOpen}>
                                     <DialogTrigger asChild>
                                       <Button
                                         variant="outline"
                                         size="icon"
                                         onClick={() => {
-                                          setEditingAtribuicao({ atribuicaoId: epi.atribuicaoId, validade: epi.validade });
-                                          setIsValidadeDialogOpen(true);
+                                          setViewingEPI(epi);
+                                          setIsViewDialogOpen(true);
                                         }}
+                                      >
+                                        <Eye className="h-4 w-4" />
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-2xl">
+                                      <DialogHeader>
+                                        <DialogTitle>Informações do EPI</DialogTitle>
+                                      </DialogHeader>
+                                      {viewingEPI && (
+                                        <div className="space-y-4">
+                                          <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                              <Label className="font-semibold">Nome</Label>
+                                              <p className="text-sm mt-1">{viewingEPI.nome}</p>
+                                            </div>
+                                            <div>
+                                              <Label className="font-semibold">CA</Label>
+                                              <p className="text-sm mt-1">{viewingEPI.ca}</p>
+                                            </div>
+                                          </div>
+                                          <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                              <Label className="font-semibold">Tipo (Finalidade)</Label>
+                                              <p className="text-sm mt-1">{viewingEPI.tipo}</p>
+                                            </div>
+                                            <div>
+                                              <Label className="font-semibold">Fabricante</Label>
+                                              <p className="text-sm mt-1">{viewingEPI.fabricante}</p>
+                                            </div>
+                                          </div>
+                                          <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                              <Label className="font-semibold">Data de Validade</Label>
+                                              <p className="text-sm mt-1">{formatDate(viewingEPI.validade)}</p>
+                                            </div>
+                                            <div>
+                                              <Label className="font-semibold">Data de Entrega</Label>
+                                              <p className="text-sm mt-1">{formatDate(viewingEPI.entrega)}</p>
+                                            </div>
+                                          </div>
+                                          <div>
+                                            <Label className="font-semibold">Modo de Uso</Label>
+                                            <p className="text-sm mt-1 whitespace-pre-wrap">{viewingEPI.uso}</p>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </DialogContent>
+                                  </Dialog>
+                                  <Dialog open={isEditEPIDialogOpen && editingEPI?.id === epi.id} onOpenChange={setIsEditEPIDialogOpen}>
+                                    <DialogTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        size="icon"
+                                        onClick={() => handleEditEPIClick(epi)}
                                       >
                                         <Edit2 className="h-4 w-4" />
                                       </Button>
                                     </DialogTrigger>
-                                    <DialogContent>
+                                    <DialogContent className="max-w-2xl">
                                       <DialogHeader>
-                                        <DialogTitle>Atualizar Data de Validade</DialogTitle>
+                                        <DialogTitle>Editar EPI</DialogTitle>
                                       </DialogHeader>
-                                      <form onSubmit={(e) => {
-                                        e.preventDefault();
-                                        if (editingAtribuicao) {
-                                          onUpdateAtribuicaoValidade(editingAtribuicao.atribuicaoId, editingAtribuicao.validade);
-                                          setIsValidadeDialogOpen(false);
-                                          setEditingAtribuicao(null);
-                                          toast.success("Data de validade atualizada com sucesso!");
-                                        }
-                                      }} className="space-y-4">
+                                      <form onSubmit={handleEditEPISubmit} className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                          <div>
+                                            <Label htmlFor="edit-epi-nome">Nome do EPI</Label>
+                                            <Input
+                                              id="edit-epi-nome"
+                                              value={editEPIForm.nome}
+                                              onChange={(e) => setEditEPIForm({ ...editEPIForm, nome: e.target.value })}
+                                              required
+                                            />
+                                          </div>
+                                          <div>
+                                            <Label htmlFor="edit-epi-ca">CA</Label>
+                                            <Input
+                                              id="edit-epi-ca"
+                                              value={editEPIForm.ca}
+                                              onChange={(e) => setEditEPIForm({ ...editEPIForm, ca: e.target.value })}
+                                              required
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                          <div>
+                                            <Label htmlFor="edit-epi-tipo">Tipo (Finalidade)</Label>
+                                            <Input
+                                              id="edit-epi-tipo"
+                                              value={editEPIForm.tipo}
+                                              onChange={(e) => setEditEPIForm({ ...editEPIForm, tipo: e.target.value })}
+                                              required
+                                            />
+                                          </div>
+                                          <div>
+                                            <Label htmlFor="edit-epi-fabricante">Fabricante</Label>
+                                            <Input
+                                              id="edit-epi-fabricante"
+                                              value={editEPIForm.fabricante}
+                                              onChange={(e) => setEditEPIForm({ ...editEPIForm, fabricante: e.target.value })}
+                                              required
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                          <div>
+                                            <Label htmlFor="edit-epi-validade">Data de Validade</Label>
+                                            <Input
+                                              id="edit-epi-validade"
+                                              type="date"
+                                              value={editEPIForm.validade}
+                                              onChange={(e) => setEditEPIForm({ ...editEPIForm, validade: e.target.value })}
+                                              required
+                                            />
+                                          </div>
+                                          <div>
+                                            <Label htmlFor="edit-epi-entrega">Data de Entrega</Label>
+                                            <Input
+                                              id="edit-epi-entrega"
+                                              type="date"
+                                              value={editEPIForm.entrega}
+                                              onChange={(e) => setEditEPIForm({ ...editEPIForm, entrega: e.target.value })}
+                                              required
+                                            />
+                                          </div>
+                                        </div>
                                         <div>
-                                          <Label htmlFor="validade">Data de Validade</Label>
+                                          <Label htmlFor="edit-epi-uso">Modo de Uso</Label>
                                           <Input
-                                            id="validade"
-                                            type="date"
-                                            value={editingAtribuicao?.validade || ""}
-                                            onChange={(e) => setEditingAtribuicao(editingAtribuicao ? { ...editingAtribuicao, validade: e.target.value } : null)}
+                                            id="edit-epi-uso"
+                                            value={editEPIForm.uso}
+                                            onChange={(e) => setEditEPIForm({ ...editEPIForm, uso: e.target.value })}
                                             required
                                           />
                                         </div>

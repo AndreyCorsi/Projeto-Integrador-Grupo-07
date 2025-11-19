@@ -25,7 +25,7 @@ export class Empresa {
     static create(empresa: string, endereco:string, cpnj: string, email:string, senha:string)
     {
     const hashedPassword = bcrypt.hashSync(senha);
-        return new Empresa(empresa,endereco,cpnj,email,senha)
+        return new Empresa(empresa,endereco,cpnj,email,hashedPassword)
     }
 
      verifyPassword(senha: string): boolean {

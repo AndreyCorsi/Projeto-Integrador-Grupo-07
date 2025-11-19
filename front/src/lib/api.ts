@@ -1,5 +1,4 @@
 const API_URL = "https://grupo07projeto20252.escolatecnicaadelia.info/api";
-
 // Tipos para as requisições
 export interface FuncionarioCreateDTO {
   nome: string;
@@ -170,6 +169,63 @@ export const EPIAPI = {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.erro || "Erro ao remover EPI");
+    }
+
+    return response.json();
+  },
+};
+
+// Tipos para Empresa
+export interface EmpresaLoginDTO {
+  email: string;
+  senha: string;
+}
+
+export interface EmpresaRegisterDTO {
+  empresa: string;
+  ramoAtividade: string;
+  dataFundacao: string;
+  cnpj: string;
+  telefone: string;
+  endereco: string;
+  email: string;
+  responsavel: string;
+  senha: string;
+}
+
+// Serviços de Empresa/Autenticação
+export const EmpresaAPI = {
+  // Login
+  async login(data: EmpresaLoginDTO) {
+    const response = await fetch(`${API_URL}/empresas/autenticacao`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.erro || "Erro ao fazer login");
+    }
+
+    return response.json();
+  },
+
+  // Registro
+  async registrar(data: EmpresaRegisterDTO) {
+    const response = await fetch(`${API_URL}/empresas`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.erro || "Erro ao registrar empresa");
     }
 
     return response.json();
